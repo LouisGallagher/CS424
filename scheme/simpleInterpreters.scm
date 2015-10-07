@@ -116,4 +116,46 @@
 					(else (error "bad LLE" e))))))))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;Yet another attempt at cleaning up the derivative code;;;;;;;;;;;;;;;;;;;;;;;;;
+;;The main mechanism used here is table driven code
+;; also handles arbitrary symbols
+
+(define d/dx 
+	(lambda (e x)
+		(cond 
+			((number? e) 0)
+			(((equal? e x) 1))
+			((symbol? e) 0)    ;; d/dx(y)  = 0
+			((pair? e)
+				(let ((f (car e))))
+				 (apply (lookup f dtable)     ;;resolves to a function
+				 	())))))
+
+(define dtable (list
+	(list '* (lambda (u v du dv)(lle+ (lle* u dv) (lle* v du))))
+	(list '+ (lambda (u v du dv)(lle+ du dv)))))
+
+
+(define lookup
+	(lambda (x alist)
+	(if (equal? x (caar alist))   ;;for nested lists caar = the first element of the first list in the list
+		(cadar alist)			  ;;for nested lists cadar = the tail of the first list in the list
+		(lookup x (cdr alist))))) ;;else look in the next list in the list 
+
+(define lle+ 
+	(lambda (e1 e2)
+		(cond
+			((and (number? e1) (number? e2)) (+ e1 e2))
+			((zero? e1) e2)
+			((zero? e2) e1)
+			(else (list '+ e1 e2)))))
+
+(define lle*
+	(lambda (e1 e2)
+		(cond 
+			((or (zero? e1) (zero? e2)) 0)  ;; if either are zero the result is zero 
+			((equal? e1 1) e2)              ;; 1 = identity
+			((equal? e2 1) e1)
+			((else (list '* e1 e2))))))     ;;
