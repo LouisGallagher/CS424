@@ -131,7 +131,8 @@
 			((pair? e)
 				(let ((f (car e))))
 				 (apply (lookup f dtable)     ;;resolves to a function
-				 	())))))
+				 	((append (cdr e) (map (λ (u) (d/dx u x)) (cdr e)))))) ;; takes this list as arguments
+			(else (error "Bad LLE " e)))))
 
 (define dtable (list
 	(list '* (lambda (u v du dv)(lle+ (lle* u dv) (lle* v du))))
