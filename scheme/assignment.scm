@@ -41,7 +41,7 @@
 			((set-contains? s2 (car s1)) (cons (car s1) (set-intersection (cdr s1) s2)))
 			(else (set-intersection (cdr s1) s2)))))
 
-;; returns s1\s2 i.e. those elements in s1 that are not also in s2
+;; returns s1\s2 i.e. those elements in s1 that are not also in s()2
 (define set-difference
 	(lambda (s1 s2)
 		(cond
@@ -71,7 +71,7 @@
 		(cond
 			((list? e)
 				(cond
-					((or (equal? (car e) 'lambda) (equal? (car e) 'λ)) (set-difference (free-variables (cddr e)) (cadr e)))
-		    		((list? (car e) (set-union (free-variables (car e)) (free-variables (cadr e)))))
-		    		(else (cons e (free-variables (cdr e))))))
-		    (else (list e)))))
+					((null? e) null)
+					((or (equal? (car e) 'lambda) (equal? (car e) 'λ)) (set-difference (free-variables (cddr e)) (list (cadr e))))		    		
+		    		(else (set-union (free-variables (car e)) (free-variables (cdr e))))))
+		    (else (cons e null)))))
