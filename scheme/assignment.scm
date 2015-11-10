@@ -7,6 +7,13 @@
 			((equal? (car s) e) #t)
 			(else (set-contains? (cdr s) e)))))
 
+(define is-subset?
+	(lambda (s1 s2)
+		(cond
+			((null? s1) #t)
+			((set-contains? s2 (car s1)) (is-subset? (cdr s1) s2))
+			(else #f))))
+
 (define set-cardinally 
 	(lambda (s)
 		(if (null? s)
@@ -34,3 +41,7 @@
 			((null? s1) null)  
 			((set-contains? s2 (car s1)) (set-difference (cdr s1) s2))
 			(else (cons (car s1) (set-difference (cdr s1) s2))))))
+
+(define set-equal?
+	(lambda (s1 s2)
+		(and (equal? (set-cardinally s1) (set-cardinally s2)) (is-subset? s1 s2))))
