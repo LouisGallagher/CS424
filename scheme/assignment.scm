@@ -62,3 +62,16 @@
 			(else (set-union (f (car s)) (set-map-join f (cdr s)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;end set functions;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;; lambda calculus manipulation;;;;;;;;;;;;;;;;;;;;;
+
+(define free-variables
+	(lambda (e)
+		(cond
+			((list? e)
+				(cond
+					((or (equal? (car e) 'lambda) (equal? (car e) 'λ)) (set-difference (free-variables (cddr e)) (cadr e)))
+		    		((list? (car e) (set-union (free-variables (car e)) (free-variables (cadr e)))))
+		    		(else (cons e (free-variables (cdr e))))))
+		    (else (list e)))))
