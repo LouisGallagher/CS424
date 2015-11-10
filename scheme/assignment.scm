@@ -68,6 +68,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; lambda calculus manipulation;;;;;;;;;;;;;;;;;;;;;
 
+
+;; Gets the set of free variables in a lambda calculus expression 
 (define free-variables
 	(lambda (e)
 		(cond
@@ -77,3 +79,19 @@
 					((or (equal? (car e) 'lambda) (equal? (car e) 'λ)) (set-difference (free-variables (cddr e)) (list (cadr e))))		    		
 		    		(else (set-union (free-variables (car e)) (free-variables (cdr e))))))
 		    (else (cons e null)))))
+
+(define replace
+	(λ (e1 e2 x)
+		(cond
+			((null? e1) null)
+			((list? e1) 
+				(cond
+					((equal? (car e1) 'λ) e1)
+					(else (cons (replace (car e1) e2 x) (replace (cdr e1) e2 x)))))
+			((equal? (car e1) x) (cons e2 (replace(cdr e1) e2 x)))			
+			(else (cons (car e1) (replace (cdr e1) e2 x))))))
+(define β-reduce
+	(λ (e)
+		(cond
+			((and (pair? e) (and (equal? (caar e) 'λ) (equal? (set-intersection (free-variables (cddar e)) (free-variables(cdr e))) null )) (replace (cddar e) (cdr e) (cadar e))))
+			(else #f))))
