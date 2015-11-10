@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;finger exercises;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;set functions;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; return true if the set s contains the element e, false otherwise
@@ -61,4 +61,4 @@
 			((null? s) null)
 			(else (set-union (f (car s)) (set-map-join f (cdr s)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;end finger functions;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;end set functions;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
