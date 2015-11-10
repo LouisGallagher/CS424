@@ -30,8 +30,10 @@
 		(cond
 			((null? s2) s1 )
 			((null? s1) s2 )
-			((set-contains? s1 (car s2)) (cons (car s1) (set-union (cdr s1) (cdr s2))))
-			(else (cons (car s1) (cons (car s2) (set-union (cdr s1) (cdr s2)))))))) 
+			;;((set-contains? s1 (car s2)) (cons (car s1) (set-union (cdr s1) (cdr s2))))
+			;;(else (cons (car s1) (cons (car s2) (set-union (cdr s1) (cdr s2)))))))) 
+			((set-contains? s1 (car s2)) (set-union  s1 (cdr s2)))
+			(else (cons (car s2) (set-union  s1 (cdr s2)))))))
 
 ;; returns the set that is the intersection of s1 and s2
 (define set-intersection
