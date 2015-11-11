@@ -67,7 +67,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; lambda calculus manipulation;;;;;;;;;;;;;;;;;;;;;
 
-
+;; Gets the set of bound variables in a lambda calculus (sub)expression 
 (define bound-variables
 	(λ (e)
 		(cond
@@ -76,7 +76,7 @@
 			((equal? (car e) 'λ) (set-union (list (cadr e)) (bound-variables (cddr e))))
 			(else (bound-variables (cdr e))))))
 
-;; Gets the set of free variables in a lambda calculus expression 
+;; Gets the set of free variables in a lambda calculus (sub)expression 
 (define free-variables
 	(lambda (e)
 		(cond
@@ -109,3 +109,7 @@
 			(replace (cddar e) (cdr e) (cadar e)))                                                                                                                                   
 			(else #f))))
 
+;;;;;;;;;;;;;;;;;;;;;;;end lambda calc stuff ;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;tests ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; to come 
