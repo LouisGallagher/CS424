@@ -28,10 +28,8 @@
 (define set-union
 	(lambda (s1 s2)
 		(cond
-			((null? s2) s1 )
-			((null? s1) s2 )
-			;;((set-contains? s1 (car s2)) (cons (car s1) (set-union (cdr s1) (cdr s2))))
-			;;(else (cons (car s1) (cons (car s2) (set-union (cdr s1) (cdr s2)))))))) 
+			((null? s2) (list s1))
+			((null? s1) (list s2))
 			((set-contains? s1 (car s2)) (set-union  s1 (cdr s2)))
 			(else (cons (car s2) (set-union  s1 (cdr s2)))))))
 
@@ -69,6 +67,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;; lambda calculus manipulation;;;;;;;;;;;;;;;;;;;;;
 
 
+(define bound-variables
+	(λ (e)
+		(cond
+			((null? e) null)
+			((list? (car e)) (set-union (bound-variables(car e)) (bound-variables (cdr e))))
+			((equal? (car e) 'λ) (set-union (cadr e) (bound-variables (cddr e))))
+			(else (bound-variables (cdr e))))))
+
 ;; Gets the set of free variables in a lambda calculus expression 
 (define free-variables
 	(lambda (e)
@@ -82,16 +88,23 @@
 
 (define replace
 	(λ (e1 e2 x)
-		(cond
-			((null? e1) null)
-			((list? e1) 
+		(cond 
+			((list? e1)
 				(cond
+					((null? e1) null)
 					((equal? (car e1) 'λ) e1)
 					(else (cons (replace (car e1) e2 x) (replace (cdr e1) e2 x)))))
-			((equal? (car e1) x) (cons e2 (replace(cdr e1) e2 x)))			
-			(else (cons (car e1) (replace (cdr e1) e2 x))))))
+			((equal? e1 x) e2)
+			(else e1))))
+
 (define β-reduce
 	(λ (e)
 		(cond
-			((and (pair? e) (and (equal? (caar e) 'λ) (equal? (set-intersection (free-variables (cddar e)) (free-variables(cdr e))) null )) (replace (cddar e) (cdr e) (cadar e))))
+			((and 
+				(pair? e)
+				 (and 
+				 	(equal? (caar e) 'λ) 
+				 	(null? (set-intersection (bound-variables (cddar e)) (free-variables (cdr e)) ))))) 
+			(replace (cddar e) (cdr e) (cadar e))                                                                                                                                   
 			(else #f))))
+
