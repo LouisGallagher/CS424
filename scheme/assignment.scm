@@ -87,29 +87,46 @@
 		    		(else (set-union (free-variables (car e)) (free-variables (cdr e))))))
 		    (else (cons e null)))))
 
-(define replace
-	(λ (e1 e2 x)
-		(cond 
-			((list? e1)
-				(cond
-					((null? e1) null)
-					((equal? (car e1) 'λ) e1)
-					(else (cons (replace (car e1) e2 x) (replace (cdr e1) e2 x)))))
-			((equal? e1 x) e2)
-			(else e1))))
+;;(define replace
+;;	(λ (e1 e2 x)
+;;		(cond 
+;;			((list? e1)
+;;				(cond
+;;					((null? e1) null)
+;;					((equal? (car e1) 'λ) e1)
+;;					(else (cons (replace (car e1) e2 x) (replace (cdr e1) e2 x)))))
+;;			((equal? e1 x) e2)
+;;			(else e1))))
+
+;;(define β-reduce
+;;	(λ (e)
+;;		(cond
+;;			((and 
+;;				(pair? e)
+;;				 (and 
+;;				 	(equal? (caar e) 'λ) 
+;;				 	(null? (set-intersection (bound-variables (cddar e)) (free-variables (cdr e)) )))) 
+;;			(β-reduce (replace (cddar e) (cdr e) (cadar e))))                                                                                                                                   
+;;			(else #f))))  
+
+
+(define replace 
+	(λ (e1 e2)
+		cond ))
 
 (define β-reduce
 	(λ (e)
-		(cond
-			((and 
-				(pair? e)
-				 (and 
-				 	(equal? (caar e) 'λ) 
-				 	(null? (set-intersection (bound-variables (cddar e)) (free-variables (cdr e)) )))) 
-			(replace (cddar e) (cdr e) (cadar e)))                                                                                                                                   
-			(else #f))))
-
+		(cond 
+			((not (replace )))
+			()
+			()
+			)))
 ;;;;;;;;;;;;;;;;;;;;;;;end lambda calc stuff ;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;tests ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; to come 
+
+ ;;(define test-it
+;;	(lambda ()
+;;		(cons
+;;			)))
