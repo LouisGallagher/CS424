@@ -110,23 +110,34 @@
 ;;			(else #f))))  
 
 
-(define replace 
-	(λ (e1 e2)
-		cond ))
+ (define replace 
+	(λ (e1 e2 x)
+		(cond
+			((null? e1) null)
+			((list? e1)
+				(cond
+					((list? (car e1)) (cons (replace (car e1) e2 x) (replace (cdr e1) e2 x)))
+					((and (equal? (car e1) 'λ) (equal? (cadr e1) x)) e1)
+				    ((equal? (car e1) x) (cons e2 (replace (cdr e1) e2 x)))
+				    (else (cons (car e1) (replace (cdr e1) e2 x)))))
+			(else e1))))
 
 (define β-reduce
 	(λ (e)
 		(cond 
-			((not (replace )))
-			()
-			()
-			)))
+			((and
+				(pair? e)
+				(and (equal? (caar e) 'λ) (null? (set-intersection (bound-variables (car e)) (free-variables (cadr e)) )) ))
+			 (cons (replace (cddar e) (cadr e) (cadar e)) (cddr e)))
+			((list? (car e1)) )
+			((equal? (car e) 'λ) e)
+			(else #f))))
 ;;;;;;;;;;;;;;;;;;;;;;;end lambda calc stuff ;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;tests ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; to come 
 
- ;;(define test-it
+;;(define test-it
 ;;	(lambda ()
 ;;		(cons
 ;;			)))
