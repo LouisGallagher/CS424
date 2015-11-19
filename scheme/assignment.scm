@@ -137,7 +137,25 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;tests ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; to come 
 
-;;(define test-it
-;;	(lambda ()
-;;		(cons
-;;			)))
+(define test-it
+  (λ ()
+    (define iota (λ (n)
+                   (define iota0 (λ (i) (if (= i n) '() (cons i (iota0 (+ i 1))))))
+                   (iota0 0)))
+    (define tests
+      (list (λ () (set-equal? (set-union '(a b c d e) '(c d e f g))
+                              '(b d a c e g f)))
+            (λ () (set-equal? (free-variables '((a b) (λ c ((d c) (e b)))))
+                              '(a b d e)))
+            (λ () (equal? (set-contains? '(1 2 3) 1) #t))
+            (λ () (equal? (set-contains? '(1 2 3) 4) #f))
+            (λ () (equal? (set-cardinally '(1 2 3)) 3))
+            (λ () (set-equal? (set-intersection '(1 2 3 ) '(1 2 4 3 5) ) '(1 2 3) ) )
+            (λ () (set-equal? (set-difference '(2 3 4 5) '(4 5 6) ) '(2 3)) )
+            (λ () (set-equal? (set-map-join (λ (e) (list (+ e 1) (* e 10))) '(1 2 3 4)) '(3 2 10 4 40 5 20 30)) )
+            (λ () (equal? (β-reduce '((λ x (((λ x (x y)) x) (x b))) z)) '(((((λ x (x y)) z) (z b))))))
+            ))
+    (filter number?
+            (map (λ (t i) (if (t) #f i))
+                 tests
+                 (iota (length tests))))))
