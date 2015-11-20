@@ -129,8 +129,7 @@
 				(pair? e)
 				(and (equal? (caar e) 'λ) (null? (set-intersection (bound-variables (car e)) (free-variables (cadr e)) )) ))
 			 (cons (replace (cddar e) (cadr e) (cadar e)) (cddr e)))
-			((list? (car e1)) )
-			((equal? (car e) 'λ) e)
+			((list? (car e)) (cons (β-reduce (car e)) (cdr e)))
 			(else #f))))
 ;;;;;;;;;;;;;;;;;;;;;;;end lambda calc stuff ;;;;;;;;;;;;;;;;;;
 
