@@ -127,9 +127,11 @@
 		(cond 
 			((and
 				(pair? e)
-				(and (equal? (caar e) 'λ) (null? (set-intersection (bound-variables (car e)) (free-variables (cadr e)) )) ))
+				(and (and (list? (car e)) (equal? (caar e) 'λ)) (null? (set-intersection (bound-variables (car e)) (free-variables (cadr e)) )) ))
 			 (cons (replace (cddar e) (cadr e) (cadar e)) (cddr e)))
-			((list? (car e)) (cons (β-reduce (car e)) (cdr e)))
+			((list? (car e))
+				 (let ((f (β-reduce (car e))))
+						(if f (cons f (cdr e)) #f)))
 			(else #f))))
 ;;;;;;;;;;;;;;;;;;;;;;;end lambda calc stuff ;;;;;;;;;;;;;;;;;;
 
