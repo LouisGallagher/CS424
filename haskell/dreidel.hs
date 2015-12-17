@@ -1,3 +1,8 @@
+{-|
+author         : Louis Gallagher
+description    : Contains solutions for a college assignment as given here https://github.com/barak/mu-cs424-f2015/blob/master/assignment-2.md 
+-}
+
 import Dist
 import Data.List
 import Data.Ord
