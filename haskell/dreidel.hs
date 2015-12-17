@@ -55,8 +55,15 @@ maximizePrExceeds y0 target n = maximumBy (comparing snd3) ([(fromIntegral i * 0
 > maximizeExpRet 1000 10
 1.0
 
+-- thus p = 1.0
+
+
 -- find p that maximizes probabilty that return exceeds 4000 after 10 rounds of play
 >maximizePrExceeds 1000 4000 10
 (0.31,0.4744071960449219,45538.24055304078) 
 
+-- thus:
+		p 			= 0.31
+		PrExceeds 	= 0.4744071960449219
+		mean 		= 45538.24055304078
 -}
