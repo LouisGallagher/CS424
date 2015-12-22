@@ -87,29 +87,76 @@
 		    		(else (set-union (free-variables (car e)) (free-variables (cdr e))))))
 		    (else (cons e null)))))
 
-(define replace
+;;(define replace
+;;	(λ (e1 e2 x)
+;;		(cond 
+;;			((list? e1)
+;;				(cond
+;;					((null? e1) null)
+;;					((equal? (car e1) 'λ) e1)
+;;					(else (cons (replace (car e1) e2 x) (replace (cdr e1) e2 x)))))
+;;			((equal? e1 x) e2)
+;;			(else e1))))
+
+;;(define β-reduce
+;;	(λ (e)
+;;		(cond
+;;			((and 
+;;				(pair? e)
+;;				 (and 
+;;				 	(equal? (caar e) 'λ) 
+;;				 	(null? (set-intersection (bound-variables (cddar e)) (free-variables (cdr e)) )))) 
+;;			(β-reduce (replace (cddar e) (cdr e) (cadar e))))                                                                                                                                   
+;;			(else #f))))  
+
+
+ (define replace 
 	(λ (e1 e2 x)
-		(cond 
+		(cond
+			((null? e1) null)
 			((list? e1)
 				(cond
-					((null? e1) null)
-					((equal? (car e1) 'λ) e1)
-					(else (cons (replace (car e1) e2 x) (replace (cdr e1) e2 x)))))
-			((equal? e1 x) e2)
+					((list? (car e1)) (cons (replace (car e1) e2 x) (replace (cdr e1) e2 x)))
+					((and (equal? (car e1) 'λ) (equal? (cadr e1) x)) e1)
+				    ((equal? (car e1) x) (cons e2 (replace (cdr e1) e2 x)))
+				    (else (cons (car e1) (replace (cdr e1) e2 x)))))
 			(else e1))))
 
 (define β-reduce
 	(λ (e)
-		(cond
-			((and 
+		(cond 
+			((and
 				(pair? e)
-				 (and 
-				 	(equal? (caar e) 'λ) 
-				 	(null? (set-intersection (bound-variables (cddar e)) (free-variables (cdr e)) )))) 
-			(replace (cddar e) (cdr e) (cadar e)))                                                                                                                                   
+				(and (and (list? (car e)) (equal? (caar e) 'λ)) (null? (set-intersection (bound-variables (car e)) (free-variables (cadr e)) )) ))
+			 (cons (replace (cddar e) (cadr e) (cadar e)) (cddr e)))
+			((list? (car e))
+				 (let ((f (β-reduce (car e))))
+						(if f (cons f (cdr e)) #f)))
 			(else #f))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;end lambda calc stuff ;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;tests ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; to come 
+
+(define test-it
+  (λ ()
+    (define iota (λ (n)
+                   (define iota0 (λ (i) (if (= i n) '() (cons i (iota0 (+ i 1))))))
+                   (iota0 0)))
+    (define tests
+      (list (λ () (set-equal? (set-union '(a b c d e) '(c d e f g))
+                              '(b d a c e g f)))
+            (λ () (set-equal? (free-variables '((a b) (λ c ((d c) (e b)))))
+                              '(a b d e)))
+            (λ () (equal? (set-contains? '(1 2 3) 1) #t))
+            (λ () (equal? (set-contains? '(1 2 3) 4) #f))
+            (λ () (equal? (set-cardinally '(1 2 3)) 3))
+            (λ () (set-equal? (set-intersection '(1 2 3 ) '(1 2 4 3 5) ) '(1 2 3) ) )
+            (λ () (set-equal? (set-difference '(2 3 4 5) '(4 5 6) ) '(2 3)) )
+            (λ () (set-equal? (set-map-join (λ (e) (list (+ e 1) (* e 10))) '(1 2 3 4)) '(3 2 10 4 40 5 20 30)) )
+            (λ () (equal? (β-reduce '((λ x (((λ x (x y)) x) (x b))) z)) '(((((λ x (x y)) z) (z b))))))
+            ))
+    (filter number?
+            (map (λ (t i) (if (t) #f i))
+                 tests
+                 (iota (length tests))))))
