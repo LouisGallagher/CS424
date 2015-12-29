@@ -10,3 +10,14 @@
 				(if (< 0 c) (cons l (reverse-with-count l (- c 1))) null)) 
 			(else (append (reverse-with-count (cdr l) (cdr c)) (reverse-with-count(car l) (car c)))))))
 
+
+;; Takes a list of xs and a predicate p as parameters,
+;; returns a list of those xs that immediately follow an element for which p is true 
+
+(define after-filter
+ (lambda (xs p)
+ 	(cond
+ 		((null? (cdr xs)) null)
+ 		((p (car xs)) (cons (cadr xs) (after-filter (cdr xs) p)))
+ 		(else (after-filter (cdr xs) p)))))
+
