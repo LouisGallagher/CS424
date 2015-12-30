@@ -21,3 +21,10 @@
  		((p (car xs)) (cons (cadr xs) (after-filter (cdr xs) p)))
  		(else (after-filter (cdr xs) p)))))
 
+
+(define add-numbers
+	(lambda (sexpr)
+		(cond
+			((null? sexpr) 0)
+			((number? sexpr) sexpr)
+			(else (+ (add-numbers (car sexpr)) (add-numbers (cdr sexpr)))))))
