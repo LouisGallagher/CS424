@@ -26,3 +26,8 @@ mySort p [x] = [x]
 mySort p xs = merge p (mySort p (take half xs)) (mySort p (drop half xs)) 
 			where
 			half = (length xs) `div` 2  
+
+mapEveryOther:: (a -> a) -> [a] -> [a]
+mapEveryOther f [] = []
+mapEveryOther f [x] = [f x]
+mapEveryOther f (x:y:xs) = [f x, y] ++ mapEveryOther f xs
