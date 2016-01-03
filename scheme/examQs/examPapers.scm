@@ -28,3 +28,12 @@
 			((null? sexpr) 0)
 			((number? sexpr) sexpr)
 			(else (+ (add-numbers (car sexpr)) (add-numbers (cdr sexpr)))))))
+
+
+(define deep-fetch
+	(lambda (p s-exp)
+		(cond
+			((null? s-exp) s-exp)
+			((list? (car s-exp)) (append (deep-fetch p (car s-exp)) (deep-fetch p (cdr s-exp))))
+			((p (car s-exp)) (cons (car s-exp) (deep-fetch p (cdr s-exp))))
+			(else (deep-fetch p (cdr s-exp))))))
